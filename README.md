@@ -6,6 +6,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `cp .env.sample .env`
+
+Update REACT_APP_PROJECT_ID and REACT_APP_API_KEY from the Infura IPFS dashboard in the .env file.
+
+Set the Infura subdomain in the App.js to replace batdao.
+
 ### `nvm use 14.15.0`
 ### `yarn`
 
