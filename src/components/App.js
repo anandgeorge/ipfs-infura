@@ -2,7 +2,21 @@ import "./App.css";
 import { useState } from "react";
 import { create } from "ipfs-http-client";
 
-const client = create("https://ipfs.infura.io:5001/api/v0");
+const projectId = process.env.REACT_APP_PROJECT_ID;
+const projectSecret = process.env.REACT_APP_API_KEY;
+
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+const client = create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  apiPath: "/api/v0",
+  headers: {
+    authorization: auth,
+  },
+});
 
 const App = () => {
   const [file, setFile] = useState(null);
@@ -10,6 +24,7 @@ const App = () => {
 
   const retrieveFile = (e) => {
     const data = e.target.files[0];
+    console.log(data);
     const reader = new window.FileReader();
     reader.readAsArrayBuffer(data);
 
@@ -25,7 +40,8 @@ const App = () => {
 
     try {
       const created = await client.add(file);
-      const url = `https://ipfs.infura.io/ipfs/${created.path}`;
+      const url = `https://batdao.infura-ipfs.io/ipfs/${created.path}`;
+      console.log(url);
       setUrlArr((prev) => [...prev, url]);
     } catch (error) {
       console.log(error.message);
@@ -34,19 +50,23 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">IPFS Project</header>
+      <header className="App-header">IPFS Infura</header>
 
       <div className="main">
         <form onSubmit={handleSubmit}>
           <input type="file" onChange={retrieveFile} />
-          <button type="submit" className="button">Submit</button>
+          <button type="submit" className="button">
+            Submit
+          </button>
         </form>
       </div>
 
       <div className="display">
-        {urlArr.length !== 0
-          ? urlArr.map((el) => <img src={el} alt="nfts" />)
-          : <h3>Upload data</h3>}
+        {urlArr.length !== 0 ? (
+          urlArr.map((el) => <img width="250" key={el} src={el} alt="nfts" />)
+        ) : (
+          <h3>Upload data</h3>
+        )}
       </div>
     </div>
   );
